@@ -1,193 +1,98 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Untuk Kamu 💖</title>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+  <title>Untukmu</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Indie Flower', cursive;
-      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7);
+      color: #fff;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       overflow: hidden;
-    }
-
-    .container {
       text-align: center;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      max-width: 90%;
     }
-
-    #text {
-      font-size: 1.8em;
-      color: #444;
+    h1 {
+      font-size: 2.5rem;
       margin-bottom: 20px;
+    }
+    #message {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
       min-height: 100px;
     }
-
-    .btn, .input {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
     .btn {
-      background-color: #ff6f91;
-      color: white;
+      background-color: #fff;
+      color: #ee9ca7;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
       cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
     }
-
     .btn:hover {
-      background-color: #ff3e6c;
-    }
-
-    .input {
-      margin-bottom: 10px;
-      width: 80%;
-      text-align: center;
-    }
-
-    canvas#confetti {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
+      transform: scale(1.1);
     }
   </style>
 </head>
 <body>
 
-<canvas id="confetti"></canvas>
+  <h1>Hai Kamu ❤️</h1>
+  <div id="message">Ada sesuatu buat kamu...</div>
+  <button class="btn" onclick="nextMessage()">Lanjut ❤️</button>
+  <a id="wa-share" class="btn" style="display:none; margin-top:10px;" target="_blank">Bagikan ke WhatsApp 💬</a>
 
-<div class="container">
-  <div id="form">
-    <h2>Masukkan nama orang spesialmu 💌</h2>
-    <input class="input" type="text" id="nameInput" placeholder="Contoh: Ayangku" />
-    <br>
-    <button class="btn" onclick="start()">Mulai</button>
-  </div>
+  <audio id="bgm" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/12/01/audio_15b30bbf30.mp3?filename=romantic-piano-126274.mp3" type="audio/mpeg">
+  </audio>
 
-  <div id="content" style="display: none;">
-    <div id="text"></div>
-    <button class="btn" onclick="nextMessage()">Lanjut ❤️</button>
-  </div>
-</div>
+  <script>
+    const messages = [
+      "Aku cuma mau bilang...",
+      "Terima kasih udah hadir di hidupku 😊",
+      "Hari-hariku jadi lebih indah karena kamu 🌸",
+      "Tetaplah di sisiku ya ❤️",
+      "Aku sayang kamu... banget! 😘"
+    ];
+    
+    let index = 0;
 
-<audio id="bgm" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/12/01/audio_15b30bbf30.mp3?filename=romantic-piano-126274.mp3" type="audio/mpeg">
-</audio>
+    function nextMessage() {
+      const msg = document.getElementById("message");
+      const btn = document.querySelector(".btn");
+      const audio = document.getElementById("bgm");
 
-<script>
-  const messages = [
-    "Hai, {name} ❤️",
-    "Aku cuma mau bilang sesuatu nih...",
-    "Terima kasih karena sudah ada buatku.",
-    "Kamu adalah bagian terindah dalam hariku.",
-    "Semoga kita selalu bersama selamanya 💑",
-    "Aku sayang kamu, {name} 😘",
-    "Sekian dulu, tapi cintaku nggak akan pernah habis 💖"
-  ];
+      audio.play(); // buat iOS yang butuh interaksi
 
-  let name = "";
-  let index = 0;
-  const textEl = document.getElementById("text");
-  const contentEl = document.getElementById("content");
-  const formEl = document.getElementById("form");
-  const bgm = document.getElementById("bgm");
-
-  function start() {
-    const input = document.getElementById("nameInput").value.trim();
-    if (!input) return alert("Masukkan nama dulu yaa :)");
-    name = input;
-    formEl.style.display = "none";
-    contentEl.style.display = "block";
-    bgm.play();
-    nextMessage();
-  }
-
-  function showMessage(text, callback) {
-    let i = 0;
-    textEl.innerHTML = "";
-    const typed = text.replace(/{name}/g, name);
-    const interval = setInterval(() => {
-      textEl.innerHTML += typed[i];
-      i++;
-      if (i === typed.length) {
-        clearInterval(interval);
-        if (callback) callback();
-      }
-    }, 50);
-  }
-
-  function nextMessage() {
-    if (index < messages.length) {
-      showMessage(messages[index]);
-      index++;
-      if (index === messages.length) {
-        // trigger confetti
-        setTimeout(() => {
-          launchConfetti();
-        }, 1000);
+      if (index < messages.length) {
+        typeMessage(messages[index], msg, () => index++);
+      } else {
+        btn.style.display = "none";
+        document.getElementById("wa-share").href = `https://wa.me/?text=Hai%20aku%20punya%20sesuatu%20buat%20kamu%20%F0%9F%92%95%20Coba%20lihat%20ini%3A%20${encodeURIComponent(location.href)}`;
+        document.getElementById("wa-share").style.display = "inline-block";
       }
     }
-  }
 
-  // 🎉 Simple Confetti
-  const confettiCanvas = document.getElementById('confetti');
-  const confettiCtx = confettiCanvas.getContext('2d');
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-
-  const confetti = [];
-  for (let i = 0; i < 150; i++) {
-    confetti.push({
-      x: Math.random() * confettiCanvas.width,
-      y: Math.random() * confettiCanvas.height - confettiCanvas.height,
-      r: Math.random() * 6 + 2,
-      d: Math.random() * 5 + 2,
-      color: `hsl(${Math.random() * 360}, 100%, 70%)`
-    });
-  }
-
-  function drawConfetti() {
-    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    confetti.forEach(p => {
-      confettiCtx.beginPath();
-      confettiCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      confettiCtx.fillStyle = p.color;
-      confettiCtx.fill();
-    });
-    updateConfetti();
-  }
-
-  function updateConfetti() {
-    confetti.forEach(p => {
-      p.y += p.d;
-      if (p.y > confettiCanvas.height) {
-        p.y = -10;
-        p.x = Math.random() * confettiCanvas.width;
-      }
-    });
-  }
-
-  function launchConfetti() {
-    setInterval(drawConfetti, 20);
-  }
-</script>
-
+    function typeMessage(text, element, callback) {
+      let i = 0;
+      element.innerHTML = "";
+      const interval = setInterval(() => {
+        element.innerHTML += text[i];
+        i++;
+        if (i === text.length) {
+          clearInterval(interval);
+          setTimeout(callback, 1000);
+        }
+      }, 50);
+    }
+  </script>
 </body>
 </html>
